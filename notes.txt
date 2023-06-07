@@ -1,0 +1,37 @@
+
+
+<!-- Two field values, two collections filtering mongodb -->
+
+/api/requestBook
+    -> Search book - done
+    -> Check if book borrowed => Create a dataset of borrowed books - _id, User-ID, ISBN, borrowed_createdat, return_createdat columns => return the available date of the book
+    -> book not available - insert books not available table and prompt user with message
+
+/api/createLibraryCard
+    -> Create library card, with user details and image upload, store in current folder - Rabbitmq     
+
+/api/returnBook 
+    -> ...
+
+APIs:
+-> Student
+    -> Book request = /api/requestBook
+        -> User able to request book by title, author, publisher, isbn and freetext
+        -> If book not found 
+            -> Check if it is borrowed by other Student
+                -> If it is borrowed check the return date and tell the user that, book will be 
+                   available on the given date
+            -> If student not borrowed
+                -> Tell user book asked is not available and insert the book name in not available books table
+    -> Library Card Request = /api/createLibraryCard
+        -> Create a new user with given user details and return the id
+    -> Book Return = /api/returnBook
+        -> User can return the book which was borrowed, if return date exceeds, the need to check reason.
+            -> If valid reason return book and update in db
+            -> If not a valid reason, then ask fine amount and return book and update in db
+
+-> Librarian
+    -> Books borrowed = /api/getBorrowedBooksList
+        -> Return these parameters - bookDetails, dateOfBookTook, BookReturnDate, userDetails
+    -> New Books Adding = /api/uploadNewBook
+    -> Cron Job - of book borrowed return date
