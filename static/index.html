@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Elements</title>
+    <link rel="stylesheet" href="./screen.scss">
+    <!-- Reference https://github.com/AT-UI/feather-font -->
+    <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_o5hd5vvqpoqiwwmi.css">
+    <style>
+        /**************************** SHIM - Allow for custom select // Reference - http://filamentgroup.github.io/select-css/ *****************************/
+        /* Container used for styling the custom select, the buttom class below adds the * bg gradient, corners, etc. */
+        .form__select {
+            position: relative;
+            display: block;
+        }
+
+        /* This is the native select, we're making everything but the text invisible so * we can see the button styles in the wrapper */
+        .form__select select {
+            border-radius: 0;
+            width: 100%;
+            margin: 0;
+            outline: none;
+            padding: 0.6em 0.8em 0.5em 0.8em;
+            /* Prefixed box-sizing rules necessary for older browsers */
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            /* Font size must be 16px to prevent iOS page zoom on focus */
+            font-size: 1em;
+        }
+
+        /* Custom arrow sits on top of the select - could be an image, SVG, icon font, * etc. or the arrow could just baked into the bg image on the select. */
+        .form__select::after {
+            content: " ";
+            position: absolute;
+            top: 50%;
+            right: 1em;
+            z-index: 2;
+            /* These hacks make the select behind the arrow clickable in some browsers */
+            pointer-events: none;
+            display: none;
+        }
+
+        /* Firefox <= 34 has a false positive on @supports( -moz-appearance: none ) * @supports ( mask-type: alpha ) is Firefox 35+ */
+        @supports (-webkit-appearance: none) or (appearance: none) or ((-moz-appearance: none) and (mask-type: alpha)) {
+
+            /* Show custom arrow */
+            /* Remove select styling */
+            .form__select::after {
+                display: block;
+            }
+
+            .form__select select {
+                padding-right: 2em;
+                /* Match-01 */
+                /* inside @supports so that iOS <= 8 display the native arrow */
+                background: none;
+                /* Match-04 */
+                /* inside @supports so that Android <= 4.3 display the native arrow */
+                border: 1px solid transparent;
+                /* Match-05 */
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+            }
+
+            .form__select select:focus {
+                border-color: #aaa;
+                /* Match-03 */
+            }
+        }
+
+        /**************************** SIMPLE RESET *****************************/
+        html {
+            box-sizing: border-box;
+        }
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: inherit;
+        }
+
+        html,
+        body {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            font-family: arial;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-size: 87.5%;
+        }
+
+        ::-webkit-input-placeholder {
+            /* Chrome/Opera/Safari */
+            color: #bbb;
+        }
+
+        ::-moz-placeholder {
+            /* Firefox 19+ */
+            color: #bbb;
+        }
+
+        :-ms-input-placeholder {
+            /* IE 10+ */
+            color: #bbb;
+        }
+
+        :-moz-placeholder {
+            /* Firefox 18- */
+            color: #bbb;
+        }
+
+        fieldset {
+            border: none;
+            margin-bottom: 2em;
+            margin-top: 2em;
+            position: relative;
+            width: 100%;
+        }
+
+        legend {
+            font-size: 1.5em;
+        }
+
+        label,
+        input,
+        textarea,
+        select,
+        button,
+        .btn {
+            color: inherit;
+            display: block;
+            font-size: 1em;
+            position: relative;
+            margin-bottom: 0.6em !important;
+            margin-top: 0.6em !important;
+        }
+
+        input,
+        select {
+            height: 2.8571428571em;
+        }
+
+        button,
+        .btn {
+            background-color: transparent;
+            border-radius: 0.2142857143em;
+            color: inherit;
+            cursor: pointer;
+            font-size: 1em;
+            height: 3.0714285714em;
+            line-height: 1.8;
+            min-width: 16.7857142857em;
+            padding-left: 1.5em;
+            padding-right: 1.5em;
+            text-align: center;
+        }
+
+        button:focus,
+        .btn:focus {
+            outline: none;
+        }
+
+        sup {
+            color: #bbb;
+            font-size: 1em;
+            line-height: 0;
+            vertical-align: baseline;
+        }
+
+        textarea {
+            padding-bottom: 1em;
+            padding-top: 1em;
+            resize: none;
+        }
+
+        a {
+            color: #04a8c9;
+            text-decoration: none;
+            transition-property: color;
+            transition-duration: 0.5s;
+            transition-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+            transition-delay: 0s;
+        }
+
+        a>i:first-child {
+            left: -0.27em;
+            vertical-align: bottom;
+        }
+
+        a>i:last-child {
+            right: -0.27em;
+            vertical-align: bottom;
+        }
+
+        a:hover,
+        a:focus {
+            color: #01c8f0;
+            transition-duration: 0.2s;
+        }
+
+        a:visited {
+            color: #5c1979;
+        }
+
+        .list--clean {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .list--clean>li {
+            position: relative;
+            margin-bottom: 1em;
+            margin-top: 1em;
+        }
+
+        .icon {
+            font-family: "feather";
+            font-size: 1.1em;
+            font-style: normal;
+            position: relative;
+        }
+
+        .icon--lg {
+            font-size: 1.7em;
+        }
+
+        .btn {
+            display: inline-block;
+        }
+
+        .btn>i:first-child {
+            left: -0.27em;
+            vertical-align: middle;
+        }
+
+        .btn>i:last-child {
+            right: -0.27em;
+            vertical-align: middle;
+        }
+
+        .btn--primary,
+        .btn--primary:visited {
+            background-color: #00bfb7;
+            border-color: transparent;
+            color: #fff;
+            transition-property: background-color, color;
+            transition-duration: 0.5s;
+            transition-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+            transition-delay: 0s;
+        }
+
+        .btn--primary:hover,
+        .btn--primary:focus {
+            background-color: #059690;
+            color: #fff;
+            transition-duration: 0.2s;
+        }
+
+        .btn--primary:disabled {
+            background-color: #d8d8d8;
+            color: #fff;
+            pointer-events: none;
+        }
+
+        .btn--secondary,
+        .btn--secondary:visited {
+            background-color: transparent;
+            border: 1px solid #00bfb7;
+            color: #00bfb7;
+            transition-property: border-color, color;
+            transition-duration: 0.5s;
+            transition-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+            transition-delay: 0s;
+        }
+
+        .btn--secondary:hover,
+        .btn--secondary:focus {
+            border-color: #059690;
+            color: #059690;
+            transition-duration: 0.2s;
+        }
+
+        .btn--secondary:disabled {
+            border-color: #b9b8b8;
+            color: #b9b8b8;
+            pointer-events: none;
+        }
+
+        .form {
+            font-size: 1em;
+            max-width: 28.5714285714em;
+            padding: 1em;
+            position: relative;
+            width: 100%;
+        }
+
+        .form__group {
+            position: relative;
+            margin-bottom: 1em;
+            margin-top: 2em;
+        }
+
+        .form__input,
+        .form__select .form__input {
+            color: #4a4a4a;
+            cursor: text;
+            border: 1px solid #d8d8d8;
+            padding-left: 1em;
+            padding-right: 1em;
+            width: 100%;
+            transition-property: border-color, color, box-shadow;
+            transition-duration: 0.5s;
+            transition-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+            transition-delay: 0s;
+        }
+
+        .form__input:focus,
+        .form__select .form__input:focus,
+        .form__input:hover,
+        .form__select .form__input:hover {
+            border-color: #bdbdbd;
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.09);
+            outline: none;
+            transition-duration: 0.2s;
+        }
+
+        .form__select .form__input {
+            cursor: pointer;
+        }
+
+        .form__select:before {
+            color: inherit;
+            content: '\e842';
+            display: block;
+            font-family: 'feather';
+            position: absolute;
+            pointer-events: none;
+            right: 1em;
+            top: calc(50% - 0.45em);
+            height: 1em;
+            width: 1em;
+            z-index: 1;
+        }
+
+        .form__select .form__input:required:invalid {
+            color: #bbb;
+        }
+
+        .form__checkbox {
+            position: relative;
+        }
+
+        .form__checkbox .form__input {
+            opacity: 0;
+            position: absolute;
+        }
+
+        .form__checkbox .form__label {
+            cursor: pointer;
+            display: inline-block;
+            padding-left: 1.6428571429em;
+            position: relative;
+            vertical-align: middle;
+        }
+
+        .form__checkbox .form__label:before,
+        .form__checkbox .form__label:after {
+            content: '';
+            display: inline-block;
+            height: 1.3em;
+            left: 0;
+            position: absolute;
+            top: -0.15em;
+            width: 1.3em;
+        }
+
+        .form__checkbox .form__label:before {
+            border: 1px solid #bfbfbf;
+        }
+
+        .form__checkbox .form__label:after {
+            color: #4a4a4a;
+            content: "\e83f";
+            font-family: "feather" !important;
+            font-size: 1em;
+            font-style: normal;
+            line-height: 1.3;
+            text-align: center;
+        }
+
+        .form__checkbox .form__input+.form__label:after {
+            display: none;
+        }
+
+        .form__checkbox .form__input:checked+.form__label:after {
+            display: block;
+        }
+
+        .form__checkbox .form__input:disabled+.form__label {
+            color: #bbb;
+            cursor: default;
+        }
+
+        .form__checkbox .form__input:disabled+.form__label:after {
+            color: #bbb;
+        }
+
+        .form__checkbox .form__input:disabled+.form__label:before {
+            background-color: #eee;
+            border-color: #d8d8d8;
+        }
+
+        .form__radio {
+            position: relative;
+        }
+
+        .form__radio .form__input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .form__radio .form__label {
+            cursor: pointer;
+            display: inline-block;
+            padding-left: 1.6428571429em;
+            position: relative;
+            vertical-align: middle;
+        }
+
+        .form__radio .form__label:before,
+        .form__radio .form__label:after {
+            content: '';
+            display: inline-block;
+            height: 1.3em;
+            left: 0;
+            position: absolute;
+            top: -0.15em;
+            width: 1.3em;
+        }
+
+        .form__radio .form__label:before {
+            border-radius: 50%;
+            border: 1px solid #bfbfbf;
+        }
+
+        .form__radio .form__label:after {
+            color: #4a4a4a;
+            content: "";
+            transform: scale(0.6);
+            border-radius: 50%;
+            background-color: #00bfb7;
+        }
+
+        .form__radio .form__input+.form__label:after {
+            display: none;
+        }
+
+        .form__radio .form__input:checked+.form__label:after {
+            display: block;
+        }
+
+        .form__radio .form__input:disabled+.form__label {
+            color: #bbb;
+            cursor: default;
+        }
+
+        .form__radio .form__input:disabled+.form__label:after {
+            background-color: #bbb;
+        }
+
+        .form__radio .form__input:disabled+.form__label:before {
+            background-color: #eee;
+            border-color: #d8d8d8;
+        }
+
+        .form__hint,
+        .form__error {
+            display: block;
+            position: relative;
+            margin-bottom: 0.7em;
+        }
+
+        .form__hint {
+            color: #909090;
+        }
+
+        .form__group--disabled {
+            color: #bbb;
+            pointer-events: none;
+        }
+
+        .form__group--disabled .form__input {
+            color: inherit;
+            background-color: #eee;
+        }
+
+        .form__group--error .form__input {
+            color: #ff3459;
+            border-color: #ff3459;
+        }
+
+        .form__group--error .form__error,
+        .form__group--error .form__select:before {
+            color: #ff3459;
+        }
+    </style>
+    <script>
+
+        const submitApplication = async () => {
+          try {
+            // let headersList = {
+            //     "Accept": "*/*",
+            // }
+            
+            let bodyContent = new FormData();
+            bodyContent.append("name", "jayasoorya");
+            bodyContent.append("age", "23");
+            let images = document.getElementById("file-input").files
+            alert(images)
+            for(i = 0; i <= images?.length; i++){
+                bodyContent.append("photo", images[i]);
+            }
+            // bodyContent.append("photo", "/home/justdial/Pictures/Screenshot from 2023-06-01 19-00-54.png");
+
+            let response = await fetch("/api/createLibraryCard", {
+                method: "POST",
+                body: bodyContent,
+                // headers: headersList
+            });
+
+            let data = await response.text();
+            console.log(data);
+          } catch (error) {
+            console.log(error);
+          }
+        }
+
+    </script>
+</head>
+
+<body>
+
+
+
+    <form class="form" autocomplete="off">
+
+        <fieldset>
+            <legend>Generate Library card</legend>
+
+            <!-- Default -->
+            <div class="form__group">
+                <label class="form__label" for="default">Name </label>
+                <input class="form__input" id="default" type="password" placeholder="Placeholder"
+                    aria-invalid="false" />
+            </div>
+            <div class="form__group">
+                <label class="form__label" for="default">Age </label>
+                <input class="form__input" id="default" type="password" placeholder="Placeholder"
+                    aria-invalid="false" />
+            </div>
+            <div class="form__group">
+                <label class="form__label" for="default">Location </label>
+                <input class="form__input" id="default" type="password" placeholder="Placeholder"
+                    aria-invalid="false" />
+            </div>
+            <!-- // Default -->
+
+            <div class="form__group">
+                <label class="form__label" for="upload">Upload your pic </label>
+                <div class="form__group" id="upload">
+                    <!-- Button Primary with icon right -->
+                    <input type="file" id="file-input" accept="image/*, video/*" style="display: none;" multiple>
+                    <button class="btn btn--primary" type="button" onclick="document.getElementById('file-input').click()">
+                        <span>Upload Photo</span>
+                        <i class="icon icon-camera icon--lg"></i>
+                    </button>
+                    <!-- // Button with icon right -->
+
+                </div>
+
+            </div>
+
+
+
+
+        </fieldset>
+
+
+
+        <fieldset>
+
+            <!-- Button Primary -->
+            <div class="form__group">
+                <button class="btn btn--primary" onclick="submitApplication()">Submit Application</button>
+            </div>
+
+
+
+        </fieldset>
+
+
+
+
+
+    </form>
+
+
+
+
+</body>
+
+</html>

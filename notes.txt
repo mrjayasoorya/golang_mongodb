@@ -13,6 +13,29 @@
 /api/returnBook 
     -> ...
 
+/api/Cron
+    -> Cron Job
+
+/api/socket
+    -> ...
+
+
+
+//
+Go routine
+channels
+upload images - insert db
+generate db
+rabbit mq
+kafka
+redis
+Mentioned in keep
+----
+//
+
+
+
+
 APIs:
 -> Student
     -> Book request = /api/requestBook
@@ -35,3 +58,8 @@ APIs:
         -> Return these parameters - bookDetails, dateOfBookTook, BookReturnDate, userDetails
     -> New Books Adding = /api/uploadNewBook
     -> Cron Job - of book borrowed return date
+
+
+    		// https://www.mongodb.com/community/forums/t/regex-query-with-the-go-driver/11189
+		// https://www.mongodb.com/docs/drivers/go/current/fundamentals/crud/read-operations/query-document/#std-label-golang-literal-values
+		// https://www.mongodb.com/docs/manual/reference/operator/query/regex/#mongodb-query-op.-regex

@@ -24,7 +24,6 @@ type apiCallParameters struct {
 	request        *http.Request
 	payload        models.GetBooksPayload
 	datasetlimit   int
-	apiType        string
 }
 
 func RequestBook(w http.ResponseWriter, r *http.Request) {
@@ -75,25 +74,31 @@ func RequestBook(w http.ResponseWriter, r *http.Request) {
 		request:        r,
 		payload:        p,
 		datasetlimit:   datasetlimit,
-		apiType:        "1",
 	}
 	if len(p.FreeText) > 0 {
 		books = apiCall(params)
 	} else {
-		params.apiType = "2"
 		books = apiCall(params)
 	}
+
+	var response models.GetBooksResponsePayload
 
 	// <-------
 
 	// ----->
 	// sending user the response
 	if len(books) == 0 {
-		fmt.Fprintf(w, string("[]"))
-		return
+		response.Results = books
+		response.Count = len(books)
+		response.Error.ErrorCode = 1
+		response.Error.Message = "Error"
 	} else {
-		json.NewEncoder(w).Encode(books) // encode similar to serialize process.
+		response.Results = books
+		response.Count = len(books)
+		response.Error.ErrorCode = 0
+		response.Error.Message = "Success"
 	}
+	json.NewEncoder(w).Encode(response) // encode similar to serialize process.
 	// <-----
 
 }
@@ -110,14 +115,20 @@ func apiCall(p apiCallParameters) []models.Book {
 	opts.SetLimit(int64(p.datasetlimit))
 
 	filter := bson.D{}
-	if p.apiType == "1" {
-		filter = bson.D{{Key: "$text", Value: bson.D{{Key: "$search", Value: p.payload.FreeText}}}}
-	} else if p.apiType == "2" {
-		filter = bson.D{{Key: "Book-Title", Value: bson.D{{Key: "$regex", Value: primitive.Regex{Pattern: p.payload.Title, Options: "xi"}}}}}
-		// https://www.mongodb.com/community/forums/t/regex-query-with-the-go-driver/11189
-		// https://www.mongodb.com/docs/drivers/go/current/fundamentals/crud/read-operations/query-document/#std-label-golang-literal-values
-		// https://www.mongodb.com/docs/manual/reference/operator/query/regex/#mongodb-query-op.-regex
+	if p.payload.Title != "" && p.payload.Author != "" || p.payload.Title != "" && p.payload.Author != "" && p.payload.FreeText != "" || p.payload.Title == "" && p.payload.Author == "" && p.payload.FreeText == "" {
+		// fieldval := bson.D{{Key: "$regex", Value: primitive.Regex{Pattern: p.payload.Title, Options: "xi"}}}
+		// filter = bson.D{{Key: "$or", Value: bson.A{bson.D{{Key: "Book-Title", Value: fieldval}}, bson.D{{Key: "Book-Author", Value: fieldval}}}}}
+		return books
+	} else if p.payload.FreeText != "" {
+		fieldval := bson.D{{Key: "$regex", Value: primitive.Regex{Pattern: p.payload.FreeText, Options: "xi"}}}
+		filter = bson.D{{Key: "$or", Value: bson.A{bson.D{{Key: "Book-Title", Value: fieldval}}, bson.D{{Key: "Book-Author", Value: fieldval}}}}}
+	} else if p.payload.Title != "" {
+		filter = bson.D{{Key: "$text", Value: bson.D{{Key: "$search", Value: p.payload.Title}}}}
+	} else if p.payload.Author != "" {
+		fieldval := bson.D{{Key: "$regex", Value: primitive.Regex{Pattern: p.payload.Author, Options: "xi"}}}
+		filter = bson.D{{Key: "Book-Author", Value: fieldval}}
 	}
+	// filter = bson.D{{Key: "Book-Title", Value: bson.D{{Key: "$regex", Value: primitive.Regex{Pattern: p.payload.Title, Options: "xi"}}}}}
 	cur, err := collection.Collection("Books").Find(context.TODO(), filter, opts)
 	fmt.Println(filter)
 

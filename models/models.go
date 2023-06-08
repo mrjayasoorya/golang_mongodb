@@ -12,14 +12,16 @@ type Book struct {
 	Publisher         string             `json:"Publisher" bson:"Publisher,omitempty"`
 }
 
-type Author struct {
-	FirstName string `json:"firstname,omitempty" bson:"firstname,omitempty"`
-	LastName  string `json:"lastname,omitempty" bson:"lastname,omitempty"`
+type GetBooksResponsePayload struct {
+	Results []Book   `json:"results"`
+	Error   ErrorMsg `json:"error,omitempty"`
+	Count   int      `json:"count,omitempty"`
 }
 type GetBooksPayload struct {
 	Limit    string
 	Title    string
 	FreeText string
+	Author   string
 	// Age  int
 }
 
