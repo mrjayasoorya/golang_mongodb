@@ -533,7 +533,6 @@
             bodyContent.append("name", "jayasoorya");
             bodyContent.append("age", "23");
             let images = document.getElementById("file-input").files
-            alert(images)
             for(i = 0; i <= images?.length; i++){
                 bodyContent.append("photo", images[i]);
             }
@@ -543,6 +542,9 @@
                 method: "POST",
                 body: bodyContent,
                 // headers: headersList
+                // headers:{
+                //     "Content-Type":"multipart/form-data"
+                // }
             });
 
             let data = await response.text();
